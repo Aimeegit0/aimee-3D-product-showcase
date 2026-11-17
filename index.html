@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIMEE · 黑金 3D 产品展示</title>
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body id="top">
+<div class="nav" id="nav"></div>
+<div id="goldParticles" aria-hidden="true"></div>
+
+<div class="hero-aura" aria-hidden="true">
+  <div class="aura-glow"></div>
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="silkGold" x1="0" y1="1" x2="1" y2="0">
+        <stop offset="0" stop-color="#8A6226" stop-opacity="0"/>
+        <stop offset="0.28" stop-color="#C9963F" stop-opacity="0.6"/>
+        <stop offset="0.62" stop-color="#F3D99B" stop-opacity="0.95"/>
+        <stop offset="0.86" stop-color="#B98A3D" stop-opacity="0.35"/>
+        <stop offset="1" stop-color="#8A6226" stop-opacity="0"/>
+      </linearGradient>
+      <linearGradient id="silkFaint" x1="0" y1="1" x2="1" y2="0">
+        <stop offset="0" stop-color="#8A6226" stop-opacity="0"/>
+        <stop offset="0.5" stop-color="#E2C27F" stop-opacity="0.6"/>
+        <stop offset="1" stop-color="#8A6226" stop-opacity="0"/>
+      </linearGradient>
+      <filter id="silkBlur" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="16"/>
+      </filter>
+      <filter id="silkTiny" x="-10%" y="-10%" width="120%" height="120%">
+        <feGaussianBlur stdDeviation="2.2"/>
+      </filter>
+    </defs>
+    <g class="silk-group" fill="none" stroke-linecap="round" filter="url(#silkBlur)">
+      <path d="M-160 760 C 220 640 360 420 700 370 C 1010 322 1160 190 1600 80" stroke="url(#silkGold)" stroke-width="44" opacity="0.18"/>
+      <path d="M-140 860 C 260 760 430 540 780 480 C 1100 424 1250 300 1600 210" stroke="url(#silkGold)" stroke-width="26" opacity="0.2"/>
+      <path d="M-120 620 C 260 520 430 320 760 300 C 1080 280 1240 140 1560 90" stroke="url(#silkFaint)" stroke-width="18" opacity="0.2"/>
+    </g>
+    <g class="silk-group silk-group-b" fill="none" stroke-linecap="round" filter="url(#silkTiny)">
+      <path d="M-120 730 C 220 640 350 430 670 390 C 990 350 1140 210 1580 110" stroke="url(#silkGold)" stroke-width="1.7" opacity="0.7"/>
+      <path d="M-100 830 C 280 740 440 520 790 470 C 1100 426 1260 300 1580 230" stroke="url(#silkFaint)" stroke-width="1.2" opacity="0.6"/>
+      <path d="M-80 940 C 360 830 540 610 900 550 C 1200 500 1340 380 1580 330" stroke="url(#silkGold)" stroke-width="2" opacity="0.5"/>
+      <path d="M120 900 C 340 780 520 620 760 520" stroke="url(#silkFaint)" stroke-width="1" opacity="0.45"/>
+      <path d="M380 540 C 600 380 850 350 1060 470" stroke="url(#silkGold)" stroke-width="1.3" opacity="0.45"/>
+    </g>
+  </svg>
+</div>
+
+<header class="hero">
+  <div class="hero-copy">
+    <p class="eyebrow">AIMEE · BLACK GOLD SERIES</p>
+    <h1>把产品放进<br><em>可触摸的光</em>里</h1>
+    <p class="lead">黑金质感的 3D 产品展示厅。枪械涂装、刀械皮肤与数码设备都可以拖拽旋转、逐件拆解，从整体轮廓到结构细节一次看清。</p>
+    <div class="hero-actions">
+      <a class="btn" href="gallery.html">进入产品图集 <span class="arrow">→</span></a>
+      <a class="btn ghost" href="show3d.html?id=knife-dragon">直接看 3D</a>
+    </div>
+    <div class="hero-stats">
+      <div><strong>06</strong><span>在展产品</span></div>
+      <div><strong>03</strong><span>产品分类</span></div>
+      <div><strong>360°</strong><span>自由查看</span></div>
+    </div>
+  </div>
+
+  <div class="hero-stage">
+    <span class="stage-tag">LIVE 3D</span>
+    <div class="stage-orbit"></div>
+    <div class="stage-orbit orbit-2"></div>
+    <div id="heroCanvas" style="position:absolute;inset:0"></div>
+    <div class="stage-foot"><span>CRIMSON RUSH · 赤红限定</span><b>实时渲染</b></div>
+  </div>
+
+  <div class="hero-ruler">
+    <a class="ruler-side" href="#top">返回顶部</a>
+    <div class="ruler-ticks" aria-hidden="true"></div>
+    <a class="ruler-side" href="#collection">查看概览 ↑</a>
+  </div>
+</header>
+
+<section class="section" id="collection">
+  <div class="section-head">
+    <div>
+      <h2>产品分类</h2>
+      <p>从硬核涂装到日常设备，按系列进入</p>
+    </div>
+    <a class="section-link" href="gallery.html">全部产品 →</a>
+  </div>
+  <div class="cate-grid">
+    <a class="cate-card" href="gun.html">
+      <span class="cate-no">01 / GUNS</span>
+      <div>
+        <h3>枪械系列</h3>
+        <p>限定涂装 · 竞技配色</p>
+      </div>
+      <span class="cate-arrow">↗</span>
+      <div class="cate-art" data-cate-art="gun"></div>
+    </a>
+    <a class="cate-card" href="knife.html">
+      <span class="cate-no">02 / KNIVES</span>
+      <div>
+        <h3>刀械系列</h3>
+        <p>渐变镀层 · 黑金蚀刻</p>
+      </div>
+      <span class="cate-arrow">↗</span>
+      <div class="cate-art" data-cate-art="knife"></div>
+    </a>
+    <a class="cate-card" href="digital.html">
+      <span class="cate-no">03 / DIGITAL</span>
+      <div>
+        <h3>数码系列</h3>
+        <p>旗舰手机 · 轻薄笔电</p>
+      </div>
+      <span class="cate-arrow">↗</span>
+      <div class="cate-art" data-cate-art="digital"></div>
+    </a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <div>
+      <h2>精选展品</h2>
+      <p>点击任意产品进入 3D 展示</p>
+    </div>
+    <a class="section-link" href="gallery.html">查看图集 →</a>
+  </div>
+  <div class="grid cols-3" id="featured"></div>
+</section>
+
+<footer class="site-foot">AIMEE · 黑金 3D 产品展示厅 · <em>Three.js</em> 实时渲染</footer>
+
+<script src="assets/js/products.js"></script>
+<script src="assets/js/site.js"></script>
+<script src="assets/vendor/three.min.js"></script>
+<script src="assets/js/models.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var featured = ['gun-crimson', 'knife-fade', 'phone-aurora']
+    .map(function (id) {
+      return PRODUCTS.filter(function (p) { return p.id === id; })[0];
+    })
+    .filter(Boolean);
+  document.getElementById('featured').innerHTML = featured.map(Site.card).join('');
+
+  document.querySelectorAll('[data-cate-art]').forEach(function (el) {
+    var p = PRODUCTS.filter(function (x) { return x.cate === el.getAttribute('data-cate-art'); })[0];
+    if (p) el.innerHTML = productThumb(p);
+  });
+
+  /* ---------- 首屏 3D 预览 ---------- */
+  var wrap = document.getElementById('heroCanvas');
+  if (!wrap || !window.THREE || !window.ModelLab) return;
+
+  var renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  } catch (e) {
+    return;
+  }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+  wrap.appendChild(renderer.domElement);
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+  scene.environment = ModelLab.makeEnvironment(renderer);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+
+  var key = new THREE.DirectionalLight(0xfff1d8, 2.0);
+  key.position.set(4, 6, 6);
+  scene.add(key);
+
+  var rim = new THREE.DirectionalLight(0xc0392b, 2.2);
+  rim.position.set(-6, 3, -4);
+  scene.add(rim);
+
+  var fill = new THREE.PointLight(0x9fb4ff, 0.7, 25);
+  fill.position.set(-3, -1, 5);
+  scene.add(fill);
+
+  var front = new THREE.PointLight(0xffe2b8, 1.0, 22);
+  front.position.set(2.5, 1.2, 4.5);
+  scene.add(front);
+
+  var stage = new THREE.Group();
+  scene.add(stage);
+
+  var model = ModelLab.create('gun', 'crimson', '#c0392b', '#f0725f');
+  model.rotation.set(0.16, -0.6, 0);
+  stage.add(model);
+
+  var ring = new THREE.Mesh(
+    new THREE.TorusGeometry(2.1, 0.01, 8, 120),
+    new THREE.MeshStandardMaterial({
+      color: 0xD6B16A, metalness: 1, roughness: 0.35,
+      emissive: 0xD6B16A, emissiveIntensity: 0.35
+    })
+  );
+  ring.rotation.x = Math.PI / 2;
+  ring.position.set(0, -1.25, 0);
+  stage.add(ring);
+
+  camera.position.set(1.6, 1.4, 7.6);
+  camera.lookAt(0, 0, 0);
+
+  var targetRotY = -0.6;
+  var currentRotY = -0.6;
+  var time = 0;
+  var baseScale = 1;
+  var spin = 0;
+
+  function fit() {
+    var w = wrap.clientWidth;
+    var h = wrap.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+
+    var dist = 7.6;
+    var visibleH = 2 * dist * Math.tan(THREE.MathUtils.degToRad(17));
+    var visibleW = visibleH * camera.aspect;
+    baseScale = Math.min(1.15, visibleW / 5.6, visibleH / 2.9);
+    stage.scale.setScalar(baseScale);
+
+    camera.updateProjectionMatrix();
+  }
+
+  wrap.addEventListener('pointermove', function (e) {
+    var r = wrap.getBoundingClientRect();
+    targetRotY = -0.6 + ((e.clientX - r.left) / r.width - 0.5) * 1.5;
+  });
+  wrap.addEventListener('pointerleave', function () {
+    targetRotY = -0.6;
+  });
+
+  function loop() {
+    requestAnimationFrame(loop);
+    time += 0.016;
+
+    spin += 0.0035;
+    currentRotY += (targetRotY - currentRotY) * 0.05;
+    model.rotation.y = currentRotY + spin + Math.sin(time * 0.35) * 0.05;
+    model.rotation.x = 0.16 + Math.sin(time * 0.5) * 0.015;
+
+    stage.scale.setScalar(baseScale);
+    stage.position.y = Math.sin(time * 0.8) * 0.045;
+
+    renderer.render(scene, camera);
+  }
+
+  if (window.ResizeObserver) {
+    new ResizeObserver(fit).observe(wrap);
+  } else {
+    window.addEventListener('resize', fit);
+  }
+
+  fit();
+  loop();
+})();
+
+/* 首页洒金粒子 */
+(function () {
+  var box = document.getElementById('goldParticles');
+  if (!box) return;
+  var count = window.innerWidth < 700 ? 32 : 72;
+  for (var i = 0; i < count; i++) {
+    var p = document.createElement('div');
+    var size = 2 + Math.random() * 2;
+    p.className = 'gold-particle';
+    p.style.width = size + 'px';
+    p.style.height = size + 'px';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 12 + 's';
+    p.style.animationDuration = (9 + Math.random() * 9) + 's';
+    box.appendChild(p);
+  }
+})();
+</script>
+</body>
+</html>

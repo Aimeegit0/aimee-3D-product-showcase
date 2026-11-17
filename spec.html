@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>规格文档 · AIMEE</title>
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<div class="nav" id="nav"></div>
+<a class="back-btn" href="javascript:history.back()">←</a>
+
+<div class="container">
+  <div class="page-head">
+    <h2 class="page-title">规格文档</h2>
+    <p class="page-sub">
+      选择任意产品，查看完整参数
+      <span class="en">SPECIFICATIONS</span>
+    </p>
+  </div>
+
+  <div class="spec-layout">
+    <div class="spec-list" id="specList"></div>
+    <div class="spec-panel" id="specPanel"></div>
+  </div>
+</div>
+
+<footer class="site-foot">AIMEE · 黑金 3D 产品展示厅 · <em>规格文档</em></footer>
+
+<script src="assets/js/products.js"></script>
+<script src="assets/js/site.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var listEl = document.getElementById('specList');
+  var panelEl = document.getElementById('specPanel');
+  var currentId = new URLSearchParams(location.search).get('id');
+
+  listEl.innerHTML = PRODUCTS.map(function (p) {
+    return '<button type="button" data-id="' + p.id + '" style="--c:' + p.accent + '">' +
+      '<span>' + p.name + '</span><i class="dot"></i>' +
+      '</button>';
+  }).join('');
+
+  function render(id) {
+    var product = PRODUCTS.filter(function (p) { return p.id === id; })[0] || PRODUCTS[0];
+
+    listEl.querySelectorAll('button').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-id') === product.id);
+    });
+
+    panelEl.innerHTML =
+      '<div class="spec-top">' +
+        '<div class="thumb">' + productThumb(product) + '</div>' +
+        '<div class="spec-info">' +
+          '<div class="kicker">' + product.cateLabel + ' · ' + product.tag + '</div>' +
+          '<h2>' + product.name + '</h2>' +
+          '<div class="en">' + product.en + '</div>' +
+          '<p class="desc">' + product.desc + '</p>' +
+        '</div>' +
+      '</div>' +
+      '<table class="spec-table">' +
+        '<tr><td>分类</td><td>' + product.cateLabel + '</td></tr>' +
+        product.specs.map(function (s) {
+          return '<tr><td>' + s[0] + '</td><td>' + s[1] + '</td></tr>';
+        }).join('') +
+      '</table>' +
+      '<div class="spec-actions">' +
+        '<a class="btn" href="show3d.html?id=' + product.id + '">查看 3D 模型 <span class="arrow">→</span></a>' +
+        '<a class="btn ghost" href="gallery.html">返回图集</a>' +
+      '</div>';
+
+    try {
+      history.replaceState(null, '', '?id=' + product.id);
+    } catch (err) {
+      /* file:// 下可能受限，忽略即可 */
+    }
+  }
+
+  listEl.addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (btn) render(btn.getAttribute('data-id'));
+  });
+
+  render(currentId);
+})();
+</script>
+</body>
+</html>

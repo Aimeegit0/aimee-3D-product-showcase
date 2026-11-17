@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>产品图集 · AIMEE</title>
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<div class="nav" id="nav"></div>
+<a class="back-btn" href="javascript:history.back()">←</a>
+
+<div class="container">
+  <div class="page-head">
+    <h2 class="page-title">产品图集</h2>
+    <p class="page-sub">
+      枪械涂装 · 刀械皮肤 · 数码设备
+      <span class="en">PRODUCT GALLERY</span>
+    </p>
+  </div>
+
+  <div class="filters" id="filters">
+    <button class="filter active" type="button" data-cate="all">全部</button>
+    <button class="filter" type="button" data-cate="gun">枪械</button>
+    <button class="filter" type="button" data-cate="knife">刀械</button>
+    <button class="filter" type="button" data-cate="digital">数码</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</div>
+
+<footer class="site-foot">AIMEE · 黑金 3D 产品展示厅 · <em>点击产品进入 3D 展示</em></footer>
+
+<script src="assets/js/products.js"></script>
+<script src="assets/js/site.js"></script>
+<script>
+(function () {
+  'use strict';
+  var grid = document.getElementById('grid');
+  Site.mountGrid(grid, 'all');
+
+  document.getElementById('filters').addEventListener('click', function (e) {
+    var btn = e.target.closest('.filter');
+    if (!btn) return;
+    document.querySelectorAll('.filter').forEach(function (b) {
+      b.classList.toggle('active', b === btn);
+    });
+    Site.mountGrid(grid, btn.getAttribute('data-cate'));
+  });
+})();
+</script>
+</body>
+</html>

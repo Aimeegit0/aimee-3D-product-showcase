@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="aimee 单字母标识">
+  <defs>
+    <linearGradient id="aimeeGold" x1="16" y1="52" x2="50" y2="12" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8A6226"/>
+      <stop offset="0.45" stop-color="#E8CE92"/>
+      <stop offset="0.72" stop-color="#C29445"/>
+      <stop offset="1" stop-color="#F6E7BF"/>
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="25.5" fill="none" stroke="url(#aimeeGold)" stroke-width="1" opacity="0.5"/>
+  <g fill="url(#aimeeGold)">
+    <path d="M20.2 46 L30.1 17 H33.1 L23.2 46 Z"/>
+    <path d="M43.8 46 L33.9 17 H30.9 L40.8 46 Z"/>
+    <path d="M25.4 34.6 H30.1 V36.4 H25.1 Z"/>
+    <path d="M33.9 34.6 H38.6 V36.4 H33.9 Z"/>
+    <path d="M32 31.9 L35.6 35.5 L32 39.1 L28.4 35.5 Z"/>
+  </g>
+</svg>

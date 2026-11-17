@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数码系列 · AIMEE</title>
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<div class="nav" id="nav"></div>
+<a class="back-btn" href="javascript:history.back()">←</a>
+
+<div class="container">
+  <div class="page-head">
+    <h2 class="page-title">数码系列</h2>
+    <p class="page-sub">
+      旗舰手机与轻薄笔电，金属与玻璃的细节都在模型里
+      <span class="en">DIGITAL DEVICES</span>
+    </p>
+  </div>
+  <div class="grid two" id="categoryGrid"></div>
+</div>
+
+<footer class="site-foot">AIMEE · 黑金 3D 产品展示厅 · <em>数码系列</em></footer>
+
+<script src="assets/js/products.js"></script>
+<script src="assets/js/site.js"></script>
+<script>
+  Site.mountGrid(document.getElementById('categoryGrid'), 'digital');
+</script>
+</body>
+</html>

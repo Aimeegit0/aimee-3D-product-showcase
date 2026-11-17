@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D 产品展示</title>
+<style>
+:root{--gold:#D6B16A;--gold-bright:#F0D78C;--accent:#D6B16A}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#070707;font-family:"Microsoft YaHei","PingFang SC",sans-serif;color:#fff;-webkit-font-smoothing:antialiased}
+#canvas-box{position:fixed;inset:0;z-index:1}
+#canvas-box canvas{display:block;width:100%;height:100%}
+.vignette{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 42%,rgba(0,0,0,.62) 100%)}
+
+/* 洒金粒子 */
+#goldParticles{position:fixed;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.gold-particle{position:absolute;bottom:-8px;width:3px;height:3px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px rgba(240,215,140,.9);opacity:0;animation:floatUp linear infinite}
+@keyframes floatUp{0%{transform:translateY(0) scale(.6);opacity:0}15%{opacity:.85}100%{transform:translateY(-74vh) scale(1.1);opacity:0}}
+
+/* 左上返回 */
+.back-btn{position:fixed;top:24px;left:26px;z-index:20;display:flex;align-items:center;justify-content:center;width:36px;height:36px;color:var(--gold);background:transparent;text-decoration:none;font-size:23px;line-height:1;transition:.3s}
+.back-btn:hover{color:var(--gold-bright);transform:translateX(-4px)}
+
+/* 顶部品牌 */
+.brand{position:fixed;top:30px;left:50%;transform:translateX(-50%);z-index:20;display:flex;align-items:center;gap:12px;font-size:10px;letter-spacing:.32em;color:#807A6E;pointer-events:none;white-space:nowrap}
+.brand span{color:var(--gold);letter-spacing:.28em;font-size:11px}
+.brand em{font-style:normal;padding-left:12px;border-left:1px solid #332F28}
+
+/* 右侧产品信息 */
+.info-panel{position:fixed;top:88px;right:28px;width:320px;z-index:20;padding:22px 22px 18px;background:linear-gradient(160deg,rgba(18,18,18,.92),rgba(8,8,8,.88));border:1px solid rgba(214,177,106,.22);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);max-height:calc(100vh - 200px);overflow:auto;scrollbar-width:thin;transition:transform .45s cubic-bezier(.4,0,.2,1),opacity .3s}
+.info-panel.collapsed{transform:translateX(calc(100% + 40px));opacity:0;pointer-events:none}
+.panel-toggle{position:fixed;top:100px;right:44px;z-index:22;padding:6px 11px;border:1px solid rgba(214,177,106,.35);border-radius:999px;background:rgba(8,8,8,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#CBBF9F;font-family:inherit;font-size:11px;letter-spacing:.12em;cursor:pointer;transition:.3s}
+.panel-toggle:hover,.panel-toggle.collapsed{border-color:var(--gold);color:var(--gold)}
+.info-panel::before{content:"";position:absolute;left:0;top:0;width:2px;height:54px;background:var(--accent)}
+.info-flags{display:flex;gap:8px;margin-bottom:13px}
+.flag{font-size:10px;letter-spacing:.18em;color:#9C9486;border:1px solid #2E2B25;padding:3px 8px}
+.flag.tag{color:var(--accent);border-color:var(--accent)}
+.info-panel h1{font-size:29px;font-weight:600;letter-spacing:.06em;color:#F3ECDD;line-height:1.3}
+.info-panel .en{margin-top:5px;font-size:10px;letter-spacing:.28em;color:#747065}
+.info-panel .desc{margin-top:14px;font-size:13px;line-height:1.9;color:#A7A093}
+.specs{list-style:none;margin-top:16px;border-top:1px solid #24221D}
+.specs li{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:8px 0;border-bottom:1px solid #1A1917;font-size:12.5px}
+.specs span{color:#8B8478;letter-spacing:.1em;flex:none}
+.specs em{font-style:normal;color:#DED5C5;text-align:right}
+.info-link{display:inline-flex;align-items:center;gap:6px;margin-top:16px;color:var(--gold);text-decoration:none;font-size:12px;letter-spacing:.14em;padding-bottom:2px;border-bottom:1px solid rgba(214,177,106,.3);transition:.3s}
+.info-link:hover{color:var(--gold-bright);border-color:var(--gold-bright)}
+.info-link span{transition:transform .3s}
+.info-link:hover span{transform:translateX(4px)}
+
+/* 底部提示与控制 */
+.hint{position:fixed;left:28px;bottom:30px;z-index:20;font-size:11px;letter-spacing:.16em;color:#6F695F;pointer-events:none}
+.ctrl-panel{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:20;display:flex;gap:8px;padding:8px;background:rgba(8,8,8,.66);border:1px solid #211F1B;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.ctrl-panel button{padding:10px 18px;border:1px solid #312E27;background:transparent;color:#B7B0A3;font-family:inherit;font-size:12.5px;letter-spacing:.1em;cursor:pointer;transition:.3s;white-space:nowrap}
+.ctrl-panel button:hover{border-color:var(--gold);color:var(--gold)}
+.ctrl-panel button.on{border-color:var(--gold);color:var(--gold);background:rgba(214,177,106,.09)}
+
+/* 载入层 */
+.loading{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:#070707;transition:opacity .65s ease}
+.loading.hide{opacity:0;pointer-events:none}
+.loading em{font-style:normal;font-size:11px;letter-spacing:.32em;color:#857E72}
+.loader{width:34px;height:34px;border:1px solid rgba(214,177,106,.2);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media (max-width:900px){
+  .brand{display:none}
+  .info-panel{top:auto;right:18px;left:18px;bottom:104px;width:auto;max-height:42vh;padding:16px 16px 14px}
+  .info-panel.collapsed{transform:translateY(calc(100% + 24px))}
+  .panel-toggle{top:16px;right:16px;padding:7px 12px}
+  .info-panel h1{font-size:22px}
+  .info-panel .desc{font-size:12px;line-height:1.75;margin-top:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .specs{margin-top:12px}
+  .specs li{padding:6px 0;font-size:12px}
+  .info-link{margin-top:12px}
+  .hint{display:none}
+  .ctrl-panel{bottom:16px;gap:6px;padding:6px}
+  .ctrl-panel button{padding:9px 12px;font-size:11.5px;letter-spacing:.06em}
+  .back-btn{top:16px;left:16px}
+}
+@media (max-width:420px){
+  .ctrl-panel button{padding:8px 9px;font-size:10.5px}
+  .info-panel{max-height:34vh}
+}
+</style>
+</head>
+<body>
+<div id="canvas-box"></div>
+<div class="vignette"></div>
+<div id="goldParticles"></div>
+
+<a class="back-btn" href="javascript:history.back()" aria-label="返回">←</a>
+<div class="brand"><span>AIMEE</span><em>3D SHOWROOM</em></div>
+
+<aside class="info-panel" id="infoPanel">
+  <div class="info-flags">
+    <span class="flag" id="pCate"></span>
+    <span class="flag tag" id="pTag"></span>
+  </div>
+  <h1 id="pName"></h1>
+  <p class="en" id="pEn"></p>
+  <p class="desc" id="pDesc"></p>
+  <ul class="specs" id="pSpecs"></ul>
+  <a class="info-link" href="gallery.html">浏览全部产品 <span>→</span></a>
+</aside>
+<button class="panel-toggle" id="panelToggle" type="button" aria-controls="infoPanel" aria-expanded="true">收起</button>
+
+<div class="hint">拖拽旋转 · 滚轮缩放 · 双击复位</div>
+
+<div class="ctrl-panel">
+  <button id="splitBtn" type="button">拆解模型</button>
+  <button id="rotateBtn" type="button" class="on">自动旋转</button>
+  <button id="resetBtn" type="button">重置视角</button>
+</div>
+
+<div class="loading" id="loading">
+  <span class="loader"></span>
+  <em>正在载入模型</em>
+</div>
+
+<script src="assets/vendor/three.min.js"></script>
+<script src="assets/vendor/OrbitControls.js"></script>
+<script src="assets/js/products.js"></script>
+<script src="assets/js/models.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- 解析产品 ---------- */
+  var params = new URLSearchParams(location.search);
+  var product = PRODUCTS.filter(function (p) { return p.id === params.get('id'); })[0];
+  if (!product) {
+    var name = params.get('name');
+    var cate = params.get('cate');
+    product = PRODUCTS.filter(function (p) { return name && p.name === name; })[0] ||
+      PRODUCTS.filter(function (p) { return cate && p.cate === cate; })[0] ||
+      PRODUCTS[0];
+  }
+
+  document.title = product.name + ' · 3D 产品展示';
+  document.documentElement.style.setProperty('--accent', product.accent);
+
+  document.getElementById('pCate').textContent = product.cateLabel;
+  document.getElementById('pTag').textContent = product.tag;
+  document.getElementById('pName').textContent = product.name;
+  document.getElementById('pEn').textContent = product.en;
+  document.getElementById('pDesc').textContent = product.desc;
+  document.getElementById('pSpecs').innerHTML = product.specs.map(function (s) {
+    return '<li><span>' + s[0] + '</span><em>' + s[1] + '</em></li>';
+  }).join('');
+
+  /* ---------- 信息卡片收起 / 展开 ---------- */
+  var infoPanel = document.getElementById('infoPanel');
+  var panelToggle = document.getElementById('panelToggle');
+  panelToggle.addEventListener('click', function () {
+    var collapsed = infoPanel.classList.toggle('collapsed');
+    panelToggle.classList.toggle('collapsed', collapsed);
+    panelToggle.setAttribute('aria-expanded', String(!collapsed));
+    panelToggle.textContent = collapsed ? '产品信息' : '收起';
+  });
+
+  var loading = document.getElementById('loading');
+
+  /* ---------- 渲染器 ---------- */
+  var renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+  } catch (err) {
+    loading.innerHTML = '<em>当前浏览器无法启用 WebGL</em>';
+    return;
+  }
+
+  var box = document.getElementById('canvas-box');
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  box.appendChild(renderer.domElement);
+
+  var scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x070707);
+  scene.fog = new THREE.Fog(0x070707, 16, 36);
+
+  var camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.05, 200);
+
+  var controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.06;
+  controls.enablePan = false;
+  controls.rotateSpeed = 0.75;
+  controls.zoomSpeed = 0.8;
+  controls.minPolarAngle = Math.PI * 0.1;
+  controls.maxPolarAngle = Math.PI * 0.56;
+  controls.autoRotate = true;
+  controls.autoRotateSpeed = 0.9;
+
+  scene.environment = ModelLab.makeEnvironment(renderer);
+
+  var accentHex = new THREE.Color(product.accent).getHex();
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+
+  var keyLight = new THREE.DirectionalLight(0xfff1d8, 2.1);
+  keyLight.position.set(4, 7, 6);
+  keyLight.castShadow = true;
+  keyLight.shadow.mapSize.set(1024, 1024);
+  keyLight.shadow.camera.near = 1;
+  keyLight.shadow.camera.far = 40;
+  keyLight.shadow.camera.left = -9;
+  keyLight.shadow.camera.right = 9;
+  keyLight.shadow.camera.top = 9;
+  keyLight.shadow.camera.bottom = -9;
+  keyLight.shadow.bias = -0.0006;
+  scene.add(keyLight);
+
+  var rimLight = new THREE.DirectionalLight(accentHex, 2.4);
+  rimLight.position.set(-6, 3, -5);
+  scene.add(rimLight);
+
+  var fillLight = new THREE.PointLight(0x9fb4ff, 1.1, 30);
+  fillLight.position.set(-4, -1, 6);
+  scene.add(fillLight);
+
+  var frontLight = new THREE.PointLight(0xffe2b8, 1.1, 26);
+  frontLight.position.set(3, 1.6, 5);
+  scene.add(frontLight);
+
+  var groundMat = new THREE.ShadowMaterial({ opacity: 0.36 });
+  var ground = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), groundMat);
+  ground.rotation.x = -Math.PI / 2;
+  ground.receiveShadow = true;
+  scene.add(ground);
+
+  /* ---------- 模型与展台 ---------- */
+  var model = ModelLab.create(product.model.kind, product.model.variant, product.accent, product.accent2);
+  scene.add(model);
+
+  var bounds = new THREE.Box3().setFromObject(model);
+  var size = bounds.getSize(new THREE.Vector3());
+  var center = bounds.getCenter(new THREE.Vector3());
+  var maxDim = Math.max(size.x, size.y, size.z);
+
+  var floorY = bounds.min.y - maxDim * 0.16;
+  ground.position.y = floorY;
+
+  var ringRadius = Math.max(size.x, size.z) * 0.5;
+  var ring = new THREE.Mesh(
+    new THREE.TorusGeometry(ringRadius, 0.008, 8, 140),
+    new THREE.MeshStandardMaterial({
+      color: 0xD6B16A, metalness: 1, roughness: 0.35,
+      emissive: 0xD6B16A, emissiveIntensity: 0.4
+    })
+  );
+  ring.rotation.x = Math.PI / 2;
+  ring.position.set(center.x, floorY + 0.004, center.z);
+  scene.add(ring);
+
+  var glowRing = new THREE.Mesh(
+    new THREE.RingGeometry(ringRadius * 0.84, ringRadius * 0.92, 96),
+    new THREE.MeshBasicMaterial({
+      color: 0xD6B16A, transparent: true, opacity: 0.05,
+      side: THREE.DoubleSide, depthWrite: false
+    })
+  );
+  glowRing.rotation.x = -Math.PI / 2;
+  glowRing.position.set(center.x, floorY + 0.002, center.z);
+  scene.add(glowRing);
+
+  /* ---------- 视角 ---------- */
+  var homePos = new THREE.Vector3();
+  var homeTarget = new THREE.Vector3();
+
+  (function frameModel() {
+    var dist = maxDim * 1.25 + 0.6;
+    var aspect = window.innerWidth / window.innerHeight;
+    if (aspect < 0.9) dist *= 1.18;
+
+    homeTarget.set(center.x, center.y - size.y * 0.02, center.z);
+    homePos.set(
+      center.x + dist * 0.3,
+      center.y + size.y * 0.5 + maxDim * 0.12,
+      center.z + dist * 0.95
+    );
+
+    camera.near = Math.max(maxDim / 200, 0.02);
+    camera.far = maxDim * 60;
+    camera.updateProjectionMatrix();
+    camera.position.copy(homePos);
+    controls.target.copy(homeTarget);
+    controls.minDistance = maxDim * 0.62;
+    controls.maxDistance = maxDim * 4;
+    controls.update();
+  })();
+
+  /* ---------- 拆解 ---------- */
+  var parts = model.children.filter(function (o) {
+    return o.userData && o.userData.explode;
+  });
+  var explode = 0;
+  var explodeTarget = 0;
+
+  function applyExplode(t) {
+    parts.forEach(function (o) {
+      o.position.copy(o.userData.base).addScaledVector(o.userData.explode, t * 0.55);
+    });
+  }
+
+  /* ---------- 相机复位 ---------- */
+  var camAnim = null;
+
+  function resetView() {
+    var to = homePos.clone().sub(homeTarget)
+      .multiplyScalar(1 + explode * 0.5)
+      .add(homeTarget);
+    camAnim = {
+      from: camera.position.clone(),
+      to: to,
+      targetFrom: controls.target.clone(),
+      targetTo: homeTarget.clone(),
+      t: 0
+    };
+  }
+
+  function stepCamera(dt) {
+    if (!camAnim) return;
+    camAnim.t = Math.min(1, camAnim.t + dt * 2.4);
+    var e = 1 - Math.pow(1 - camAnim.t, 3);
+    camera.position.lerpVectors(camAnim.from, camAnim.to, e);
+    controls.target.lerpVectors(camAnim.targetFrom, camAnim.targetTo, e);
+    if (camAnim.t >= 1) camAnim = null;
+  }
+
+  controls.addEventListener('start', function () { camAnim = null; });
+
+  /* ---------- 交互 ---------- */
+  var splitBtn = document.getElementById('splitBtn');
+  var rotateBtn = document.getElementById('rotateBtn');
+  var resetBtn = document.getElementById('resetBtn');
+
+  splitBtn.addEventListener('click', function () {
+    explodeTarget = explodeTarget > 0.5 ? 0 : 1;
+    splitBtn.textContent = explodeTarget > 0.5 ? '组装模型' : '拆解模型';
+    splitBtn.classList.toggle('on', explodeTarget > 0.5);
+  });
+
+  rotateBtn.addEventListener('click', function () {
+    controls.autoRotate = !controls.autoRotate;
+    rotateBtn.classList.toggle('on', controls.autoRotate);
+  });
+
+  resetBtn.addEventListener('click', resetView);
+  renderer.domElement.addEventListener('dblclick', resetView);
+
+  /* ---------- 主循环 ---------- */
+  var clock = new THREE.Clock();
+  var elapsed = 0;
+
+  function animate() {
+    requestAnimationFrame(animate);
+    var dt = Math.min(clock.getDelta(), 0.05);
+    elapsed += dt;
+
+    var prevExplode = explode;
+    explode += (explodeTarget - explode) * Math.min(1, dt * 6.5);
+    if (Math.abs(explodeTarget - explode) < 0.0015) explode = explodeTarget;
+    applyExplode(explode);
+
+    /* 拆解时把相机同步后拉，避免零件飞出画面 */
+    if (!camAnim && Math.abs(explode - prevExplode) > 0.00001) {
+      var ratio = (1 + explode * 0.5) / (1 + prevExplode * 0.5);
+      camera.position.sub(controls.target).multiplyScalar(ratio).add(controls.target);
+    }
+
+    stepCamera(dt);
+
+    glowRing.material.opacity = 0.045 + Math.sin(elapsed * 1.4) * 0.022;
+
+    controls.update();
+    renderer.render(scene, camera);
+  }
+
+  animate();
+
+  window.addEventListener('resize', function () {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  /* ---------- 载入完成 ---------- */
+  setTimeout(function () {
+    loading.classList.add('hide');
+  }, 420);
+
+  /* ---------- 洒金粒子 ---------- */
+  var particleBox = document.getElementById('goldParticles');
+  var count = window.innerWidth < 700 ? 26 : 56;
+  for (var i = 0; i < count; i++) {
+    var p = document.createElement('div');
+    p.className = 'gold-particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 8 + 's';
+    p.style.animationDuration = (7 + Math.random() * 7) + 's';
+    p.style.opacity = 0;
+    particleBox.appendChild(p);
+  }
+})();
+</script>
+</body>
+</html>

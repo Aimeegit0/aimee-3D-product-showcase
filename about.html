@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>项目介绍 · AIMEE</title>
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<div class="nav" id="nav"></div>
+<a class="back-btn" href="javascript:history.back()">←</a>
+
+<div class="container">
+  <div class="page-head">
+    <h2 class="page-title">项目介绍</h2>
+    <p class="page-sub">
+      一个黑金质感的实时 3D 产品展示厅
+      <span class="en">ABOUT THE SHOWROOM</span>
+    </p>
+  </div>
+
+  <p class="about-text">
+    AIMEE 把不同品类的产品放进同一套视觉语言里：枪械涂装、刀械皮肤与数码设备，都用同一块黑色展台、同一束金色轮廓光来呈现。目标不是做电商货架，而是让每件展品在网页里有被“端详”的机会。
+  </p>
+
+  <div class="about-grid">
+    <div class="about-card">
+      <span class="num">01 / COLLECTION</span>
+      <h3>分类展陈</h3>
+      <p>枪械、刀械、数码三个系列，每个系列有独立的分类页，统一从产品数据生成卡片与缩略图。</p>
+    </div>
+    <div class="about-card">
+      <span class="num">02 / REALTIME 3D</span>
+      <h3>实时渲染</h3>
+      <p>基于 Three.js 的实时场景，PBR 金属材质配合自绘环境反射，旋转时能看到高光在表面流动。</p>
+    </div>
+    <div class="about-card">
+      <span class="num">03 / EXPLODE</span>
+      <h3>结构拆解</h3>
+      <p>每件模型都由独立零件组成，点击“拆解模型”即可平滑展开，观察机匣、刀身、屏幕等结构。</p>
+    </div>
+  </div>
+
+  <div class="about-block">
+    <h2>技术实现</h2>
+    <p class="about-text">
+      全部页面为静态 HTML / CSS / JavaScript，无需构建工具即可直接打开。3D 依赖已本地化，断网也能正常渲染。模型使用程序化几何体（Box、Cylinder、Extrude、Capsule）搭建，屏幕与键盘纹理由 Canvas 动态生成，不依赖任何外部图片。
+    </p>
+    <div class="tech-tags">
+      <span>Three.js r147</span>
+      <span>OrbitControls</span>
+      <span>PBR 金属材质</span>
+      <span>PMREM 环境反射</span>
+      <span>Canvas 纹理</span>
+      <span>程序化建模</span>
+      <span>响应式布局</span>
+    </div>
+  </div>
+
+  <div class="about-block">
+    <h2>操作指南</h2>
+    <ul class="guide-list">
+      <li><b>旋转</b>在 3D 展示页按住左键拖拽，从任意角度观察产品。</li>
+      <li><b>缩放</b>滚动滚轮拉近拉远，查看刀身纹理或屏幕细节。</li>
+      <li><b>拆解</b>点击底部“拆解模型”，零件会平滑分离；再次点击复原。</li>
+      <li><b>复位</b>双击画面或点击“重置视角”，回到初始机位。</li>
+      <li><b>自动旋转</b>默认开启，点击按钮可暂停，方便细看某一面。</li>
+      <li><b>切换</b>在“产品图集”或“规格文档”中选择其他展品。</li>
+    </ul>
+  </div>
+
+  <div class="about-block">
+    <h2>继续浏览</h2>
+    <p class="about-text">从图集进入任意产品，或直接打开一件展品的 3D 视图。</p>
+    <div class="spec-actions">
+      <a class="btn" href="gallery.html">进入产品图集 <span class="arrow">→</span></a>
+      <a class="btn ghost" href="show3d.html?id=gun-crimson">查看赤红限定</a>
+    </div>
+  </div>
+</div>
+
+<footer class="site-foot">AIMEE · 黑金 3D 产品展示厅 · <em>Three.js</em> 实时渲染</footer>
+
+<script src="assets/js/products.js"></script>
+<script src="assets/js/site.js"></script>
+</body>
+</html>
